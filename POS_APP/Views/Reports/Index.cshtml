@@ -1,0 +1,95 @@
+﻿@model IEnumerable<POS_APP.Models.Order>
+
+@{
+    ViewData["Title"] = "Sales Report";
+}
+
+<h2 class="text-success mb-4">📑 Sales Report</h2>
+
+<!-- ✅ ปุ่ม Clear All Bills -->
+<div class="d-flex justify-content-end mb-3">
+    <form asp-action="ClearAll" method="post">
+        <button type="submit" class="btn btn-danger"
+                onclick="return confirm('Are you sure you want to clear all bills?');">
+            🗑 Clear All Bills
+        </button>
+    </form>
+</div>
+
+<!-- ✅ Summary -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5>Total Sales</h5>
+                <span class="badge bg-success fs-5">@ViewBag.TotalSales.ToString("C")</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5>Total Orders</h5>
+                <span class="badge bg-primary fs-5">@ViewBag.TotalOrders</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5>Total Items Sold</h5>
+                <span class="badge bg-warning text-dark fs-5">@ViewBag.TotalItems</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ Bills -->
+<h4 class="mt-4">🧾 Order Bills</h4>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No orders found.</p>
+}
+else
+{
+    @foreach (var order in Model.OrderByDescending(o => o.OrderDate))
+    {
+        <div class="card mb-3 shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between">
+                <span><strong>Order #@order.OrderId</strong> | @order.OrderDate.ToString("g")</span>
+                <span class="fw-bold text-success">@order.Total.ToString("C")</span>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-bordered mb-0 text-center align-middle">
+                    <colgroup>
+                        <col style="width: 50%">   <!-- Product -->
+                        <col style="width: 15%">   <!-- Qty -->
+                        <col style="width: 15%">   <!-- Price -->
+                        <col style="width: 20%">   <!-- Subtotal -->
+                    </colgroup>
+                    <thead class="table-success">
+                        <tr>
+                            <th>Product</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in order.Items.OrderBy(i => i.Product.Name))
+                        {
+                            <tr>
+                                <td class="text-start">@item.Product.Name</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Price.ToString("C")</td>
+                                <td>@((item.Price * item.Quantity).ToString("C"))</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    }
+}
