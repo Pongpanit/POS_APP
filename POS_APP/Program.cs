@@ -34,6 +34,13 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+// ? Auto apply migrations
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
+
 // ? Middleware pipeline
 if (!app.Environment.IsDevelopment())
 {
