@@ -11,7 +11,7 @@ using POS_APP.Models;
 namespace POS_APP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250928221746_InitSqlite")]
+    [Migration("20250929020159_InitSqlite")]
     partial class InitSqlite
     {
         /// <inheritdoc />

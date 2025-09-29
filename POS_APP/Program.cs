@@ -27,19 +27,12 @@ builder.Services.AddRazorPages();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // session มีอายุ 30 นาที
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
 
 var app = builder.Build();
-
-// ? Auto apply migrations
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
-}
 
 // ? Middleware pipeline
 if (!app.Environment.IsDevelopment())
@@ -56,14 +49,19 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ? ใช้งาน Session
 app.UseSession();
 
-// ? Default route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Products}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+// ? Apply migrations automatically
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
 
 app.Run();
