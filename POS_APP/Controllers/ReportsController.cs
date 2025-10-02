@@ -41,14 +41,14 @@ namespace POS_APP.Controllers
                 _context.Orders.RemoveRange(orders);
                 _context.SaveChanges();
 
-                // ✅ Reset OrderId ให้เริ่มใหม่จาก 1
-                _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Orders', RESEED, 0)");
+                // Reset OrderId (SQLite)
+                _context.Database.ExecuteSqlRaw("DELETE FROM sqlite_sequence WHERE name = 'Orders';");
 
-                TempData["Message"] = "✅ All bills cleared and OrderId reset!";
+                TempData["Message"] = "All bills cleared and OrderId reset!";
             }
             else
             {
-                TempData["Message"] = "⚠️ No bills to clear.";
+                TempData["Message"] = "No bills to clear.";
             }
 
             return RedirectToAction("Index");

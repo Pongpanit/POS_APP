@@ -155,10 +155,10 @@ namespace POS_APP.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            // ✅ Clear cart
+            //Clear cart
             HttpContext.Session.Remove(CartSessionKey);
 
-            TempData["CheckoutSuccess"] = "✅ Order has been successfully saved!";
+            TempData["CheckoutSuccess"] = "Order has been successfully saved!";
             return RedirectToAction("Index");
         }
     }
